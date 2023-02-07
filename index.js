@@ -31,6 +31,7 @@ const createGraph = (str) => {
 
 const pathToDistance = (graph, str) => {
     let sum = 0;
+
     for(let i=0; i<str.length - 1; i++) {
         const [start, dest] = [str[i], str[i+1]];
         if( !(start in graph) || !(dest in graph[start])) {
@@ -43,14 +44,29 @@ const pathToDistance = (graph, str) => {
     return sum;
 }
 
-const numberOfTrips 
+const numOfTrips = (graph, start, dest, stops) => {
 
 
+}
 
-// const explore(graph, start, end)
+const dfs = (start, dest, graph, stops=1, str='', set=new Set()) => {
+    str+=start;
+
+    if ( start == dest ) {
+        set.add(str)
+    }
+    if (stops > 4) return set;
+
+    Object.keys(graph[start]).forEach((nextStation) => {
+        dfs(nextStation, dest, graph, stops+1, str, set)
+    })
+
+    return set;    
+}
 
 const testInput = `AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7`
 const graph = createGraph(testInput);
+
 const output1 = pathToDistance(graph, 'ABC');
 const output2 = pathToDistance(graph, 'AD');
 const output3 = pathToDistance(graph, 'ADC');
@@ -63,4 +79,5 @@ console.log(output3);
 console.log(output4);
 console.log(output5);
 
+console.log(dfs('A', 'C', graph));
 
