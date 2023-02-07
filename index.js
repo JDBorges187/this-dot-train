@@ -44,25 +44,35 @@ const pathToDistance = (graph, str) => {
     return sum;
 }
 
-const numOfTrips = (graph, start, dest, stops) => {
-
-
-}
-
-const dfs = (start, dest, graph, stops=1, str='', set=new Set()) => {
+const dfs = (graph, start, dest, maxStops, stops=0, str='', set=new Set()) => {
     str+=start;
 
-    if ( start == dest ) {
+    if ( start == dest && stops > 0 ) {
         set.add(str)
     }
-    if (stops > 4) return set;
+    // console.log(set);
+    if (stops >= maxStops) return;
 
     Object.keys(graph[start]).forEach((nextStation) => {
-        dfs(nextStation, dest, graph, stops+1, str, set)
+        dfs(graph, nextStation, dest, maxStops, stops+1, str, set)
     })
 
     return set;    
 }
+
+const numOfTrips = (graph, start, dest, maxStops, exact=false) => {
+    const uniqueTrips = dfs(graph, start, dest, maxStops);
+    const tripsArray = Array.from(uniqueTrips);
+
+    if (exact) {
+        const exactTrips = tripsArray.filter(trip => trip.length - 1 == maxStops)
+        return exactTrips.length;
+    } else {
+        return tripsArray.length;
+    }
+}
+
+
 
 const testInput = `AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7`
 const graph = createGraph(testInput);
@@ -78,6 +88,5 @@ console.log(output2);
 console.log(output3);
 console.log(output4);
 console.log(output5);
-
-console.log(dfs('A', 'C', graph));
-
+console.log(numOfTrips(graph, 'C', 'C', 3));
+console.log(numOfTrips(graph, 'A', 'C', 4, true));
